@@ -1,0 +1,28 @@
+services:
+
+  backend:
+    build:
+      context: ./backend
+    container_name: url-shortener-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app  
+    env_file:
+      - ./backend/.env
+
+
+  db:
+    image: postgres:16
+    container_name: url-shortener-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: url_shortener
+    ports:
+      - "5432:5432"    
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  
+
+volumes:
+  postgres_data:      
