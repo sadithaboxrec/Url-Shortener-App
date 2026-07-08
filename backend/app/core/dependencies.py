@@ -42,7 +42,24 @@ async def get_current_user(
             detail="Session expired",
         )
 
-    return session.user
+    # return session.user
+
+    ## after the error in loading urls assigned to each user
+    result = await db.execute(
+        select(User).where(
+            User.id == session.user_id
+        )
+    )
+
+    user = result.scalar_one_or_none()
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+        )
+
+    return user
 
 
 
