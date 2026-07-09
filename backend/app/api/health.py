@@ -27,3 +27,19 @@ async def health():
             "status": "error",
             "database": str(e),
         }
+    
+from app.core.redis import redis    
+
+@router.get("/redis-test")
+async def redis_test():
+
+    await redis.set(
+        "hello",
+        "world",
+    )
+
+    value = await redis.get("hello")
+
+    return {
+        "redis": value
+    }

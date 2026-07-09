@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     google_client_id: str = ""
     google_client_secret: str = ""
 
+    redis_host: str
+    redis_port: int
+
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=False,

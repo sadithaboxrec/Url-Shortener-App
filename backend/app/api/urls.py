@@ -11,26 +11,29 @@ from app.db.models import User
 from app.schemas.url import URLCreateRequest, URLResponse
 from app.services.url_service import create_short_url
 
+from app.core.rate_limit import rate_limit
+
 router = APIRouter(
     prefix="/urls",
     tags=["URLs"],
 )
 
 
-@router.post(
-    "",
-    response_model=URLResponse,
-)
-async def create_url(
-    data: URLCreateRequest,
-    db: AsyncSession = Depends(get_db),
-    current_user: User | None = Depends(get_optional_user),
-):
-    return await create_short_url(
-        db=db,
-        original_url=str(data.original_url),
-        user=current_user,
-    )
+# @router.post(
+#     "",
+#     response_model=URLResponse,
+# )
+# async def create_url(
+#     data: URLCreateRequest,
+#     db: AsyncSession = Depends(get_db),
+#     current_user: User | None = Depends(get_optional_user),
+# ):
+#     return await create_short_url(
+#         db=db,
+#         original_url=str(data.original_url),
+#         user=current_user,
+#     )
+
 
 
 
@@ -43,6 +46,49 @@ async def create_url(
 from app.schemas.url import UserURLResponse
 from app.core.dependencies import get_current_user
 from app.services.url_service import get_user_urls
+
+
+
+# after adding redis
+
+# @router.post("")
+# async def create_url(
+#     data: URLCreateRequest,
+#     db: AsyncSession = Depends(get_db),
+#     current_user: User | None = Depends(get_optional_user),
+
+#     _: None = Depends(
+#         rate_limit(
+#             limit=20,
+#             window=3600,
+#             prefix="create_url",
+#         )
+#     ),
+# ):
+
+
+@router.post(
+    "",
+    response_model=URLResponse,
+)
+async def create_url(
+    data: URLCreateRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User | None = Depends(get_optional_user),
+    _: None = Depends(
+        rate_limit(
+            limit=2,
+            window=30,
+            prefix="create_url",
+        )
+    ),
+):
+    return await create_short_url(
+        db=db,
+        original_url=str(data.original_url),
+        user=current_user,
+    )
+
 
 @router.get(
     "/me",
@@ -78,6 +124,10 @@ async def redirect_url(
         url=url.original_url,
         status_code=307,
     )
+
+
+
+
 
 
 
