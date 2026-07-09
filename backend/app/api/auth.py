@@ -19,6 +19,11 @@ from app.schemas.auth import LoginRequest
 from app.services.auth_service import authenticate_user
 
 
+# for logout
+from fastapi import Cookie, Response
+from app.services.auth_service import delete_session
+
+
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"],
@@ -149,4 +154,25 @@ async def me(
         "id": current_user.id,
         "email": current_user.email,
         "name": current_user.name,
+    }
+
+
+
+
+# logout
+
+@router.post("/logout")
+async def logout(
+    response: Response,
+    session_id: str | None = Cookie(default=None),
+    db: AsyncSession = Depends(get_db),
+):
+    if session_id:
+        await delete_session(db, session_id)
+        # If there is no cookie,  return success anyway.
+
+    response.delete_cookie("session_id")
+
+    return {
+        "message": "Logged out successfully"
     }

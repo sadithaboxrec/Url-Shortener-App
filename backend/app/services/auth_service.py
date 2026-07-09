@@ -72,3 +72,26 @@ async def authenticate_user(
         )
 
     return user
+
+
+
+# logout user by deleting the session from the database
+
+
+from sqlalchemy import delete
+
+from app.db.models import Session
+
+
+async def delete_session(
+    db: AsyncSession,
+    session_id: str,
+) -> None:
+
+    await db.execute(
+        delete(Session).where(
+            Session.id == session_id
+        )
+    )
+
+    await db.commit()    
