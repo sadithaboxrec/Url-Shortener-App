@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     redis_host: str
     redis_port: int
 
+    FRONTEND_URL: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=False,
