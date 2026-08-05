@@ -1,11 +1,11 @@
 import { useMemo, useState, type FormEvent } from "react";
 import axios from "axios";
 import { Check, Copy, ExternalLink, Link2, QrCode } from "@/components/ui/Icons";
-import { QRCodeSVG } from "qrcode.react";
 
 import { useCreateUrl } from "@/hooks/useCreateUrl";
 import { getShortUrl } from "@/utils/constants";
 import Button from "@/components/ui/Button";
+import QrDownloadCard from "@/components/common/QrDownloadCard";
 
 export default function ShortenForm() {
   const [originalUrl, setOriginalUrl] = useState("");
@@ -73,7 +73,7 @@ export default function ShortenForm() {
               <a href={shortUrl} target="_blank" rel="noopener noreferrer" aria-label="Open short URL" className="grid min-h-11 min-w-11 place-items-center rounded-xl border border-slate-300 bg-white text-slate-600 transition hover:bg-slate-100"><ExternalLink size={18} /></a>
             </div>
           </div>
-          {showQr && <div className="mt-4 flex items-center gap-4 rounded-xl bg-white p-4"><QRCodeSVG value={shortUrl} size={92} level="M" /><div><p className="font-bold text-slate-900">Scan to open</p><p className="mt-1 text-sm text-slate-500">Save or show this code on any screen.</p></div></div>}
+          {showQr && <div className="mt-4"><QrDownloadCard value={shortUrl} filename={`shortly-${createUrlMutation.data.short_code}`} /></div>}
         </div>
       )}
       <p className="mt-3 text-center text-xs font-medium text-slate-400">No account required · Secure redirects · Free to use</p>

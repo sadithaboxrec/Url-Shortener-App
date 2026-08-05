@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart3, Check, Copy, ExternalLink, Link2, MousePointerClick, QrCode, Search } from "@/components/ui/Icons";
-import { QRCodeSVG } from "qrcode.react";
 
 import { getUserUrls } from "@/api/urls";
 import ShortenForm from "@/components/home/ShortenForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { getShortUrl } from "@/utils/constants";
 import { formatDate } from "@/utils/date";
+import QrDownloadCard from "@/components/common/QrDownloadCard";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -61,7 +61,7 @@ export default function Dashboard() {
                   <div className="min-w-0 flex-1"><a href={shortUrl} target="_blank" rel="noopener noreferrer" className="font-extrabold text-violet-700 hover:underline">{shortUrl}</a><p className="mt-1 truncate text-sm text-slate-500" title={url.original_url}>{url.original_url}</p><p className="mt-1 text-xs font-medium text-slate-400">Created {formatDate(url.created_at)}</p></div>
                   <div className="flex items-center gap-2"><span className="mr-2 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-sm font-bold text-amber-700"><MousePointerClick size={15} /> {url.click_count}</span><button type="button" onClick={() => copyUrl(url.id, url.short_code)} className="grid size-10 place-items-center rounded-xl border border-slate-200 text-slate-500 hover:bg-white hover:text-violet-700" aria-label="Copy short link">{copiedId === url.id ? <Check size={18} className="text-emerald-600" /> : <Copy size={18} />}</button><button type="button" onClick={() => setQrId(qrId === url.id ? null : url.id)} className="grid size-10 place-items-center rounded-xl border border-slate-200 text-slate-500 hover:bg-white hover:text-violet-700" aria-label="Show QR code"><QrCode size={18} /></button><a href={shortUrl} target="_blank" rel="noopener noreferrer" className="grid size-10 place-items-center rounded-xl border border-slate-200 text-slate-500 hover:bg-white hover:text-violet-700" aria-label="Open short link"><ExternalLink size={18} /></a></div>
                 </div>
-                {qrId === url.id && <div className="mt-4 flex flex-col items-center gap-4 rounded-2xl bg-slate-50 p-5 sm:ml-15 sm:flex-row"><div className="rounded-xl bg-white p-2 shadow-sm"><QRCodeSVG value={shortUrl} size={108} level="M" /></div><div><p className="font-extrabold text-slate-900">Ready to scan</p><p className="mt-1 text-sm text-slate-500">Point a phone camera at this code to open your short link.</p></div></div>}
+                {qrId === url.id && <div className="mt-4 rounded-2xl bg-slate-50 p-2 sm:ml-15"><QrDownloadCard value={shortUrl} filename={`shortly-${url.short_code}`} compact /></div>}
               </article>;
             })}</div>}
         </section>
