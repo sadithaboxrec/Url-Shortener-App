@@ -8,3 +8,7 @@ export interface UrlResponse {
     original_url: string;
     created_at: string;
 }
+
+export interface UserUrl extends UrlResponse {
+    click_count: number;
+}

@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createShortUrl } from "../api/urls";
 import type {
     CreateUrlRequest,
@@ -6,6 +6,8 @@ import type {
 } from "../types/url";
 
 export function useCreateUrl() {
+    const queryClient = useQueryClient();
+
     return useMutation<
         UrlResponse,
         Error,
@@ -13,12 +15,8 @@ export function useCreateUrl() {
     >({
         mutationFn: createShortUrl,
 
-        onSuccess: (data) => {
-            console.log("Short URL created:", data);
-        },
-
-        onError: (error) => {
-            console.error("Failed to create URL:", error);
+        onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: ["user-urls"] });
         },
     });
 }
